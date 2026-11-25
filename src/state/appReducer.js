@@ -12,6 +12,9 @@ export const actionTypes = {
   BILLS_LOAD_START: 'bills/loadStart',
   BILLS_LOAD_SUCCESS: 'bills/loadSuccess',
   BILLS_LOAD_FAILURE: 'bills/loadFailure',
+  ITEMS_LOAD_START: 'items/loadStart',
+  ITEMS_LOAD_SUCCESS: 'items/loadSuccess',
+  ITEMS_LOAD_FAILURE: 'items/loadFailure',
 }
 
 export const initialState = {
@@ -31,6 +34,11 @@ export const initialState = {
   billsCustomer: null,
   billsStatus: 'idle',
   billsError: null,
+  items: [],
+  itemsBill: null,
+  products: [],
+  itemsStatus: 'idle',
+  itemsError: null,
 }
 
 export function appReducer(state, action) {
@@ -83,6 +91,23 @@ export function appReducer(state, action) {
 
     case actionTypes.BILLS_LOAD_FAILURE:
       return { ...state, billsStatus: 'error', billsError: action.payload }
+
+    case actionTypes.ITEMS_LOAD_START:
+      return { ...state, itemsStatus: 'loading', itemsError: null }
+
+    case actionTypes.ITEMS_LOAD_SUCCESS: {
+      const { items, bill, products } = action.payload
+      return {
+        ...state,
+        itemsStatus: 'ready',
+        items,
+        itemsBill: bill,
+        products,
+      }
+    }
+
+    case actionTypes.ITEMS_LOAD_FAILURE:
+      return { ...state, itemsStatus: 'error', itemsError: action.payload }
 
     default:
       return state

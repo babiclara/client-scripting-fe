@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 import { formatDate, formatMoney } from '../utils/format'
 import { displayValue } from '../utils/customerTools'
 import EmptyState from './EmptyState'
@@ -19,6 +20,9 @@ export default function BillTable({ rows }) {
             <th scope="col" className="text-end">
               Total
             </th>
+            <th scope="col" className="text-end">
+              Items
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -30,6 +34,14 @@ export default function BillTable({ rows }) {
               <td className="text-nowrap">{formatDate(bill.date)}</td>
               <td className="comment-cell">{displayValue(bill.comment)}</td>
               <td className="text-end text-nowrap">{formatMoney(bill.total)}</td>
+              <td className="text-end">
+                <Link
+                  className="btn btn-sm btn-outline-secondary"
+                  to={`/bills/${bill.id}/items`}
+                >
+                  View
+                </Link>
+              </td>
             </tr>
           ))}
         </tbody>
