@@ -22,6 +22,7 @@ export const actionTypes = {
   LOOKUPS_LOADED: 'lookups/loaded',
   BILL_CREATED: 'bills/created',
   BILL_UPDATED: 'bills/updated',
+  BILL_DELETED: 'bills/deleted',
 }
 
 export const initialState = {
@@ -125,6 +126,12 @@ export function appReducer(state, action) {
 
     case actionTypes.BILL_CREATED:
       return { ...state, bills: [...state.bills, action.payload] }
+
+    case actionTypes.BILL_DELETED:
+      return {
+        ...state,
+        bills: state.bills.filter((bill) => bill.id !== action.payload),
+      }
 
     case actionTypes.BILL_UPDATED: {
       const updated = action.payload

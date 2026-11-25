@@ -15,3 +15,7 @@ export function createBill(bill) {
 export function updateBill(id, bill) {
   return api.put(`/Bill/${id}`, bill)
 }
+
+export function deleteBill(id) {
+  return api.remove(`/Bill/${id}`)
+}

@@ -4,7 +4,7 @@ import { formatDate, formatMoney } from '../utils/format'
 import { displayValue } from '../utils/customerTools'
 import EmptyState from './EmptyState'
 
-export default function BillTable({ rows, customerId }) {
+export default function BillTable({ rows, customerId, onDelete }) {
   if (rows.length === 0) {
     return <EmptyState message="This customer has no bills." />
   }
@@ -48,6 +48,13 @@ export default function BillTable({ rows, customerId }) {
                   >
                     Edit
                   </Link>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline-danger"
+                    onClick={() => onDelete(bill)}
+                  >
+                    Delete
+                  </button>
                 </div>
               </td>
             </tr>
@@ -69,4 +76,5 @@ BillTable.propTypes = {
     }),
   ).isRequired,
   customerId: PropTypes.string.isRequired,
+  onDelete: PropTypes.func.isRequired,
 }
