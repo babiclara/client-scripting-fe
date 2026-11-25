@@ -127,7 +127,7 @@ export default function ItemsPage() {
 
       <main className="container py-4">
         <div className="panel">
-          <ItemTable rows={rows} />
+          <ItemTable rows={rows} billId={billId} />
         </div>
       </main>
     </>

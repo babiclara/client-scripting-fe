@@ -11,3 +11,7 @@ export function fetchItem(id) {
 export function createItem(item) {
   return api.post('/Item', item)
 }
+
+export function updateItem(id, item) {
+  return api.put(`/Item/${id}`, item)
+}

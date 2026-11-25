@@ -30,6 +30,10 @@ export default function App() {
         />
         <Route path="bills/:billId/items" element={<ItemsPage />} />
         <Route path="bills/:billId/items/new" element={<ItemFormPage />} />
+        <Route
+          path="bills/:billId/items/:itemId/edit"
+          element={<ItemFormPage />}
+        />
         <Route path="login" element={<LoginPage />} />
       </Route>
     </Routes>

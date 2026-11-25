@@ -24,6 +24,7 @@ export const actionTypes = {
   BILL_UPDATED: 'bills/updated',
   BILL_DELETED: 'bills/deleted',
   ITEM_CREATED: 'items/created',
+  ITEM_UPDATED: 'items/updated',
   PRODUCTS_LOADED: 'products/loaded',
 }
 
@@ -131,6 +132,16 @@ export function appReducer(state, action) {
 
     case actionTypes.ITEM_CREATED:
       return { ...state, items: [...state.items, action.payload] }
+
+    case actionTypes.ITEM_UPDATED: {
+      const updated = action.payload
+      return {
+        ...state,
+        items: state.items.map((item) =>
+          item.id === updated.id ? updated : item,
+        ),
+      }
+    }
 
     case actionTypes.BILL_CREATED:
       return { ...state, bills: [...state.bills, action.payload] }
