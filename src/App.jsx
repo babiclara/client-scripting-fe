@@ -1,12 +1,14 @@
-function App() {
+import { Navigate, Route, Routes } from 'react-router-dom'
+import Layout from './components/Layout'
+import CustomersPage from './pages/CustomersPage'
+
+export default function App() {
   return (
-    <div className="container py-5">
-      <h1>Customer, Bill &amp; Item Manager</h1>
-      <p className="text-secondary">
-        Advanced Client Scripting project. Nothing built yet.
-      </p>
-    </div>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Navigate to="/customers" replace />} />
+        <Route path="customers" element={<CustomersPage />} />
+      </Route>
+    </Routes>
   )
 }
-
-export default App
