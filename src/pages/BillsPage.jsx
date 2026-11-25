@@ -104,6 +104,11 @@ export default function BillsPage() {
         ]}
         backTo="/customers"
         backLabel="All customers"
+        action={
+          <Link className="btn btn-primary" to={`/customers/${customerId}/bills/new`}>
+            New bill
+          </Link>
+        }
       />
 
       <main className="container py-4">

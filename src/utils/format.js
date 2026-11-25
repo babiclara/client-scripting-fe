@@ -32,3 +32,23 @@ export function sumAmounts(records, key) {
     return total + Number(record[key] || 0)
   }, 0)
 }
+
+export function toDateInputValue(value) {
+  var date = new Date(value)
+
+  if (isNaN(date.getTime())) {
+    return ''
+  }
+
+  return date.toISOString().slice(0, 10)
+}
+
+export function fromDateInputValue(value) {
+  var date = new Date(value + 'T00:00:00.000Z')
+
+  if (isNaN(date.getTime())) {
+    return null
+  }
+
+  return date.toISOString()
+}

@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage'
 import BillsPage from './pages/BillsPage'
 import ItemsPage from './pages/ItemsPage'
 import CustomerFormPage from './pages/CustomerFormPage'
+import BillFormPage from './pages/BillFormPage'
 
 export default function App() {
   return (
@@ -18,6 +19,10 @@ export default function App() {
           element={<CustomerFormPage />}
         />
         <Route path="customers/:customerId/bills" element={<BillsPage />} />
+        <Route
+          path="customers/:customerId/bills/new"
+          element={<BillFormPage />}
+        />
         <Route path="bills/:billId/items" element={<ItemsPage />} />
         <Route path="login" element={<LoginPage />} />
       </Route>

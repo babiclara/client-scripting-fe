@@ -7,3 +7,7 @@ export function fetchBillsByCustomer(customerId) {
 export function fetchBill(id) {
   return api.get(`/Bill/${id}`)
 }
+
+export function createBill(bill) {
+  return api.post('/Bill', bill)
+}

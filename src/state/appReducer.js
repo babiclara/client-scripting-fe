@@ -19,6 +19,8 @@ export const actionTypes = {
   CUSTOMER_CREATED: 'customers/created',
   CUSTOMER_UPDATED: 'customers/updated',
   CUSTOMER_DELETED: 'customers/deleted',
+  LOOKUPS_LOADED: 'lookups/loaded',
+  BILL_CREATED: 'bills/created',
 }
 
 export const initialState = {
@@ -43,6 +45,8 @@ export const initialState = {
   products: [],
   itemsStatus: 'idle',
   itemsError: null,
+  sellers: [],
+  creditCards: [],
 }
 
 export function appReducer(state, action) {
@@ -112,6 +116,14 @@ export function appReducer(state, action) {
 
     case actionTypes.ITEMS_LOAD_FAILURE:
       return { ...state, itemsStatus: 'error', itemsError: action.payload }
+
+    case actionTypes.LOOKUPS_LOADED: {
+      const { sellers, creditCards } = action.payload
+      return { ...state, sellers, creditCards }
+    }
+
+    case actionTypes.BILL_CREATED:
+      return { ...state, bills: [...state.bills, action.payload] }
 
     case actionTypes.CITIES_LOADED:
       return { ...state, cities: action.payload }

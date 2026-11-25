@@ -28,6 +28,32 @@ export function validateCustomer(values) {
   return errors
 }
 
+export function validateBill(values) {
+  var errors = {}
+
+  if (textOf(values.billNumber) === '') {
+    errors.billNumber = 'Bill number is required.'
+  }
+
+  if (textOf(values.date) === '') {
+    errors.date = 'Date is required.'
+  } else if (isNaN(new Date(values.date).getTime())) {
+    errors.date = 'Enter a valid date.'
+  }
+
+  var total = textOf(values.total)
+
+  if (total === '') {
+    errors.total = 'Total is required.'
+  } else if (isNaN(Number(total))) {
+    errors.total = 'Total must be a number.'
+  } else if (Number(total) < 0) {
+    errors.total = 'Total cannot be negative.'
+  }
+
+  return errors
+}
+
 export function hasErrors(errors) {
   return Object.keys(errors).length > 0
 }
