@@ -70,6 +70,25 @@ export function countPages(total, pageSize) {
   return Math.max(1, Math.ceil(total / pageSize))
 }
 
+export function initials(customer) {
+  var letters = [customer.name, customer.surname].map(function (part) {
+    return String(part || '').charAt(0).toUpperCase()
+  })
+
+  return letters.join('') || '?'
+}
+
+export function describeRange(page, pageSize, total) {
+  if (total === 0) {
+    return 'No results'
+  }
+
+  var start = (page - 1) * pageSize + 1
+  var end = Math.min(start + pageSize - 1, total)
+
+  return start + '-' + end + ' of ' + total
+}
+
 export function displayValue(value) {
   return value === '' || value === null || value === undefined ? EMPTY_VALUE : value
 }

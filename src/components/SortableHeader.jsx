@@ -6,7 +6,7 @@ export default function SortableHeader({ label, column, sortBy, sortDir, onSort 
   const buttonClass = `sort-button ${isActive ? 'sort-button-active' : ''}`
   const ariaSort = isActive ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'
 
-  let arrow = ''
+  let arrow = '↕'
   if (isActive) {
     arrow = sortDir === 'asc' ? '▲' : '▼'
   }

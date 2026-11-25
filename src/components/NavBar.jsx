@@ -6,8 +6,7 @@ import { logout } from '../api/auth'
 export default function NavBar() {
   const { state, dispatch } = useApp()
 
-  const linkClass = ({ isActive }) =>
-    `nav-link ${isActive ? 'active fw-semibold' : ''}`
+  const linkClass = ({ isActive }) => `top-nav-link ${isActive ? 'active' : ''}`
 
   function handleSignOut() {
     logout()
@@ -15,43 +14,38 @@ export default function NavBar() {
   }
 
   return (
-    <nav className="navbar navbar-expand navbar-dark bg-dark">
-      <div className="container">
-        <NavLink className="navbar-brand" to="/customers">
-          Bill Manager
+    <header className="top-bar">
+      <div className="container top-bar-inner">
+        <NavLink className="top-brand" to="/customers">
+          <span className="brand-mark" aria-hidden="true">
+            BM
+          </span>
+          <span className="d-none d-md-inline">Bill Manager</span>
         </NavLink>
 
-        <ul className="navbar-nav me-auto">
-          <li className="nav-item">
-            <NavLink className={linkClass} to="/customers">
-              Customers
-            </NavLink>
-          </li>
-        </ul>
+        <nav className="top-nav" aria-label="Main">
+          <NavLink className={linkClass} to="/customers">
+            Customers
+          </NavLink>
+        </nav>
 
         {state.token ? (
-          <div className="d-flex align-items-center gap-2">
-            <span className="navbar-text small d-none d-sm-inline">
+          <div className="top-actions">
+            <span className="top-user d-none d-lg-inline">
               {state.userEmail}
             </span>
-            <button
-              type="button"
-              className="btn btn-outline-light btn-sm"
-              onClick={handleSignOut}
-            >
+            <button type="button" className="top-cta" onClick={handleSignOut}>
               Sign out
             </button>
           </div>
         ) : (
-          <ul className="navbar-nav">
-            <li className="nav-item">
-              <NavLink className={linkClass} to="/login">
-                Sign in
-              </NavLink>
-            </li>
-          </ul>
+          <div className="top-actions">
+            <NavLink className="top-cta" to="/login">
+              Sign in
+            </NavLink>
+          </div>
         )}
       </div>
-    </nav>
+    </header>
   )
 }

@@ -7,6 +7,7 @@ import {
   attachCityNames,
   buildCityLookup,
   countPages,
+  describeRange,
   filterCustomers,
   paginate,
   sortCustomers,
@@ -15,6 +16,8 @@ import SearchBox from '../components/SearchBox'
 import PageSizeSelect from '../components/PageSizeSelect'
 import CustomerTable from '../components/CustomerTable'
 import Pagination from '../components/Pagination'
+import TableSkeleton from '../components/TableSkeleton'
+import PageBar from '../components/PageBar'
 
 export default function CustomersPage() {
   const { state, dispatch } = useApp()
@@ -80,67 +83,85 @@ export default function CustomersPage() {
   )
 
   if (status === 'loading' || status === 'idle') {
-    return <p className="text-secondary">Loading customers…</p>
+    return (
+      <>
+        <PageBar title="Customers" />
+        <main className="container py-4">
+          <div className="panel">
+            <TableSkeleton rows={8} columns={5} />
+          </div>
+          <span className="visually-hidden">Loading customers…</span>
+        </main>
+      </>
+    )
   }
 
   if (status === 'error') {
     return (
-      <div className="alert alert-danger">
-        <strong>Could not load customers.</strong> {error}
-        <div className="small mt-1">
-          Make sure the backend is running on http://localhost:3000.
-        </div>
-      </div>
+      <>
+        <PageBar title="Customers" />
+        <main className="container py-4">
+          <div className="alert alert-danger">
+            <strong>Could not load customers.</strong> {error}
+            <div className="small mt-1">
+              Make sure the backend is running on http://localhost:3000.
+            </div>
+          </div>
+        </main>
+      </>
     )
   }
 
   return (
-    <section>
-      <header className="mb-3">
-        <h1 className="h3 mb-1">Customers</h1>
-        <p className="text-secondary mb-0">
-          {ordered.length} of {rows.length} customers
-        </p>
-      </header>
-
-      <div className="row g-2 mb-3">
-        <div className="col-12 col-md-7 col-lg-6">
-          <SearchBox
-            value={search}
-            onChange={(value) =>
-              dispatch({ type: actionTypes.SET_SEARCH, payload: value })
-            }
-          />
-        </div>
-        <div className="col-12 col-md-5 col-lg-4">
-          <PageSizeSelect
-            value={pageSize}
-            onChange={(value) =>
-              dispatch({ type: actionTypes.SET_PAGE_SIZE, payload: value })
-            }
-          />
-        </div>
-      </div>
-
-      <CustomerTable
-        rows={visible}
-        sortBy={sortBy}
-        sortDir={sortDir}
-        onSort={(column) =>
-          dispatch({ type: actionTypes.SET_SORT, payload: column })
-        }
-        canViewBills={token !== null}
+    <>
+      <PageBar
+        title="Customers"
+        pills={[`${ordered.length} of ${rows.length}`]}
       />
 
-      <div className="mt-3">
-        <Pagination
-          page={currentPage}
-          totalPages={totalPages}
-          onPageChange={(nextPage) =>
-            dispatch({ type: actionTypes.SET_PAGE, payload: nextPage })
+      <main className="container py-4">
+        <div className="panel">
+        <div className="panel-controls">
+          <div className="controls-row">
+            <SearchBox
+              value={search}
+              onChange={(value) =>
+                dispatch({ type: actionTypes.SET_SEARCH, payload: value })
+              }
+            />
+            <PageSizeSelect
+              value={pageSize}
+              onChange={(value) =>
+                dispatch({ type: actionTypes.SET_PAGE_SIZE, payload: value })
+              }
+            />
+          </div>
+        </div>
+
+        <CustomerTable
+          rows={visible}
+          sortBy={sortBy}
+          sortDir={sortDir}
+          onSort={(column) =>
+            dispatch({ type: actionTypes.SET_SORT, payload: column })
           }
+          canViewBills={token !== null}
         />
-      </div>
-    </section>
+
+        <div className="panel-footer">
+          <span className="footer-range">
+            {describeRange(currentPage, pageSize, ordered.length)}
+          </span>
+          <Pagination
+            page={currentPage}
+            totalPages={totalPages}
+            onPageChange={(nextPage) =>
+              dispatch({ type: actionTypes.SET_PAGE, payload: nextPage })
+            }
+          />
+        </div>
+        </div>
+      </main>
+    </>
   )
 }

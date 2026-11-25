@@ -1,19 +1,16 @@
 import PropTypes from 'prop-types'
 import { formatDate, formatMoney } from '../utils/format'
 import { displayValue } from '../utils/customerTools'
+import EmptyState from './EmptyState'
 
 export default function BillTable({ rows }) {
   if (rows.length === 0) {
-    return (
-      <p className="alert alert-light border mb-0">
-        This customer has no bills.
-      </p>
-    )
+    return <EmptyState message="This customer has no bills." />
   }
 
   return (
     <div className="table-responsive">
-      <table className="table table-striped table-hover align-middle mb-0">
+      <table className="table align-middle data-table">
         <thead>
           <tr>
             <th scope="col">Bill number</th>
@@ -27,9 +24,11 @@ export default function BillTable({ rows }) {
         <tbody>
           {rows.map((bill) => (
             <tr key={bill.id}>
-              <td className="text-nowrap">{displayValue(bill.billNumber)}</td>
+              <td className="fw-medium text-nowrap">
+                {displayValue(bill.billNumber)}
+              </td>
               <td className="text-nowrap">{formatDate(bill.date)}</td>
-              <td>{displayValue(bill.comment)}</td>
+              <td className="comment-cell">{displayValue(bill.comment)}</td>
               <td className="text-end text-nowrap">{formatMoney(bill.total)}</td>
             </tr>
           ))}

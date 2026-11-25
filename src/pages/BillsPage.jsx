@@ -6,6 +6,8 @@ import { fetchBillsByCustomer } from '../api/bills'
 import { fetchCustomer } from '../api/customers'
 import { formatMoney, sumAmounts } from '../utils/format'
 import BillTable from '../components/BillTable'
+import TableSkeleton from '../components/TableSkeleton'
+import PageBar from '../components/PageBar'
 
 export default function BillsPage() {
   const { customerId } = useParams()
@@ -45,27 +47,46 @@ export default function BillsPage() {
 
   if (!token) {
     return (
-      <section>
-        <h1 className="h3 mb-2">Bills</h1>
-        <p className="text-secondary">
-          Bills are only available to signed-in users.
-        </p>
-        <Link className="btn btn-primary" to="/login">
-          Sign in
-        </Link>
-      </section>
+      <>
+        <PageBar title="Bills" />
+        <main className="container py-4">
+          <div className="panel p-4">
+            <p className="page-subtitle mb-3">
+              Bills are only available to signed-in users.
+            </p>
+            <Link className="btn btn-primary" to="/login">
+              Sign in
+            </Link>
+          </div>
+        </main>
+      </>
     )
   }
 
   if (billsStatus === 'loading' || billsStatus === 'idle') {
-    return <p className="text-secondary">Loading bills…</p>
+    return (
+      <>
+        <PageBar title="Bills" />
+        <main className="container py-4">
+          <div className="panel">
+            <TableSkeleton rows={6} columns={4} />
+          </div>
+          <span className="visually-hidden">Loading bills…</span>
+        </main>
+      </>
+    )
   }
 
   if (billsStatus === 'error') {
     return (
-      <div className="alert alert-danger">
-        <strong>Could not load bills.</strong> {billsError}
-      </div>
+      <>
+        <PageBar title="Bills" />
+        <main className="container py-4">
+          <div className="alert alert-danger">
+            <strong>Could not load bills.</strong> {billsError}
+          </div>
+        </main>
+      </>
     )
   }
 
@@ -74,18 +95,22 @@ export default function BillsPage() {
     : 'Customer'
 
   return (
-    <section>
-      <Link to="/customers">&larr; All customers</Link>
+    <>
+      <PageBar
+        title={customerName}
+        pills={[
+          `${bills.length} bills`,
+          formatMoney(sumAmounts(bills, 'total')),
+        ]}
+        backTo="/customers"
+        backLabel="All customers"
+      />
 
-      <header className="mb-3 mt-2">
-        <h1 className="h3 mb-1">{customerName}</h1>
-        <p className="text-secondary mb-0">
-          {bills.length} bills, {formatMoney(sumAmounts(bills, 'total'))} in
-          total
-        </p>
-      </header>
-
-      <BillTable rows={bills} />
-    </section>
+      <main className="container py-4">
+        <div className="panel">
+          <BillTable rows={bills} />
+        </div>
+      </main>
+    </>
   )
 }

@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import SortableHeader from './SortableHeader'
-import { displayValue } from '../utils/customerTools'
+import EmptyState from './EmptyState'
+import { displayValue, initials } from '../utils/customerTools'
 
 const COLUMNS = [
   { column: 'name', label: 'Name' },
@@ -13,16 +14,12 @@ const COLUMNS = [
 
 export default function CustomerTable({ rows, sortBy, sortDir, onSort, canViewBills }) {
   if (rows.length === 0) {
-    return (
-      <p className="alert alert-light border mb-0">
-        No customers match your search.
-      </p>
-    )
+    return <EmptyState message="No customers match your search." />
   }
 
   return (
     <div className="table-responsive">
-      <table className="table table-striped table-hover align-middle mb-0 customer-table">
+      <table className="table align-middle data-table">
         <thead>
           <tr>
             {COLUMNS.map(({ column, label }) => (
@@ -45,7 +42,14 @@ export default function CustomerTable({ rows, sortBy, sortDir, onSort, canViewBi
         <tbody>
           {rows.map((customer) => (
             <tr key={customer.id}>
-              <td>{displayValue(customer.name)}</td>
+              <td>
+                <div className="name-cell">
+                  <span className="monogram" aria-hidden="true">
+                    {initials(customer)}
+                  </span>
+                  {displayValue(customer.name)}
+                </div>
+              </td>
               <td>{displayValue(customer.surname)}</td>
               <td>{displayValue(customer.email)}</td>
               <td className="text-nowrap">{displayValue(customer.telephone)}</td>
