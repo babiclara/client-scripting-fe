@@ -6,15 +6,20 @@ import { fetchCities } from '../api/cities'
 import {
   attachCityNames,
   buildCityLookup,
+  countPages,
   filterCustomers,
+  paginate,
   sortCustomers,
 } from '../utils/customerTools'
 import SearchBox from '../components/SearchBox'
+import PageSizeSelect from '../components/PageSizeSelect'
 import CustomerTable from '../components/CustomerTable'
+import Pagination from '../components/Pagination'
 
 export default function CustomersPage() {
   const { state, dispatch } = useApp()
-  const { customers, cities, status, error, search, sortBy, sortDir } = state
+  const { customers, cities, status, error, search, sortBy, sortDir, page, pageSize } =
+    state
 
   const requested = useRef(false)
 
@@ -57,6 +62,13 @@ export default function CustomersPage() {
     [matching, sortBy, sortDir],
   )
 
+  const totalPages = countPages(ordered.length, pageSize)
+  const currentPage = Math.min(page, totalPages)
+  const visible = useMemo(
+    () => paginate(ordered, currentPage, pageSize),
+    [ordered, currentPage, pageSize],
+  )
+
   if (status === 'loading' || status === 'idle') {
     return <p className="text-secondary">Loading customers…</p>
   }
@@ -90,16 +102,34 @@ export default function CustomersPage() {
             }
           />
         </div>
+        <div className="col-12 col-md-5 col-lg-4">
+          <PageSizeSelect
+            value={pageSize}
+            onChange={(value) =>
+              dispatch({ type: actionTypes.SET_PAGE_SIZE, payload: value })
+            }
+          />
+        </div>
       </div>
 
       <CustomerTable
-        rows={ordered}
+        rows={visible}
         sortBy={sortBy}
         sortDir={sortDir}
         onSort={(column) =>
           dispatch({ type: actionTypes.SET_SORT, payload: column })
         }
       />
+
+      <div className="mt-3">
+        <Pagination
+          page={currentPage}
+          totalPages={totalPages}
+          onPageChange={(nextPage) =>
+            dispatch({ type: actionTypes.SET_PAGE, payload: nextPage })
+          }
+        />
+      </div>
     </section>
   )
 }

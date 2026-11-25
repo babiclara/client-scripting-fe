@@ -58,6 +58,18 @@ export function sortCustomers(customers, column, direction) {
   return copy
 }
 
+export function paginate(items, page, pageSize) {
+  var start = (page - 1) * pageSize
+  return items.slice(start, start + pageSize)
+}
+
+export function countPages(total, pageSize) {
+  if (pageSize <= 0) {
+    return 1
+  }
+  return Math.max(1, Math.ceil(total / pageSize))
+}
+
 export function displayValue(value) {
   return value === '' || value === null || value === undefined ? EMPTY_VALUE : value
 }
