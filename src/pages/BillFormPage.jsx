@@ -2,11 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useApp } from '../state/useApp'
 import { actionTypes } from '../state/appReducer'
-import { createBill } from '../api/bills'
+import { createBill, fetchBill, updateBill } from '../api/bills'
 import { fetchSellers } from '../api/sellers'
 import { fetchCreditCards } from '../api/creditCards'
-import { fromDateInputValue } from '../utils/format'
+import { fromDateInputValue, toDateInputValue } from '../utils/format'
 import BillForm from '../components/BillForm'
+import TableSkeleton from '../components/TableSkeleton'
 import PageBar from '../components/PageBar'
 
 const EMPTY_BILL = {
@@ -18,16 +19,36 @@ const EMPTY_BILL = {
   comment: '',
 }
 
+function idToString(value) {
+  return value === null || value === undefined ? '' : String(value)
+}
+
+function toFormValues(bill) {
+  return {
+    billNumber: bill.billNumber || '',
+    date: toDateInputValue(bill.date),
+    total: idToString(bill.total),
+    sellerId: idToString(bill.sellerId),
+    creditCardId: idToString(bill.creditCardId),
+    comment: bill.comment || '',
+  }
+}
+
 export default function BillFormPage() {
-  const { customerId } = useParams()
+  const { customerId, billId } = useParams()
   const { state, dispatch } = useApp()
   const navigate = useNavigate()
-  const { sellers, creditCards, token } = state
+  const { bills, sellers, creditCards, token } = state
 
+  const isEdit = Boolean(billId)
+  const fromStore = bills.find((item) => String(item.id) === billId)
+
+  const [fetched, setFetched] = useState(null)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
 
   const requestedLookups = useRef(false)
+  const requestedBill = useRef(false)
   const billsPath = `/customers/${customerId}/bills`
 
   useEffect(() => {
@@ -45,11 +66,22 @@ export default function BillFormPage() {
       .catch((requestError) => setError(requestError.message))
   }, [creditCards.length, dispatch, sellers.length, token])
 
+  useEffect(() => {
+    if (!token || !isEdit || fromStore || requestedBill.current) return
+    requestedBill.current = true
+
+    fetchBill(billId)
+      .then((data) => setFetched(data))
+      .catch((requestError) => setError(requestError.message))
+  }, [billId, fromStore, isEdit, token])
+
+  const record = fromStore || fetched
+
   async function handleSubmit(values) {
     setSubmitting(true)
     setError(null)
 
-    const payload = {
+    const edits = {
       billNumber: values.billNumber.trim(),
       date: fromDateInputValue(values.date),
       total: Number(values.total),
@@ -61,8 +93,14 @@ export default function BillFormPage() {
     }
 
     try {
-      const created = await createBill(payload)
-      dispatch({ type: actionTypes.BILL_CREATED, payload: created })
+      if (isEdit) {
+        const saved = await updateBill(billId, { ...record, ...edits })
+        dispatch({ type: actionTypes.BILL_UPDATED, payload: saved })
+      } else {
+        const created = await createBill(edits)
+        dispatch({ type: actionTypes.BILL_CREATED, payload: created })
+      }
+
       navigate(billsPath)
     } catch (requestError) {
       setError(requestError.response?.data?.message || requestError.message)
@@ -70,10 +108,12 @@ export default function BillFormPage() {
     }
   }
 
+  const title = isEdit ? 'Edit bill' : 'New bill'
+
   if (!token) {
     return (
       <>
-        <PageBar title="New bill" />
+        <PageBar title={title} />
         <main className="container py-4">
           <div className="panel p-4">
             <p className="page-subtitle mb-3">
@@ -88,20 +128,35 @@ export default function BillFormPage() {
     )
   }
 
+  if (isEdit && !record) {
+    return (
+      <>
+        <PageBar title={title} backTo={billsPath} backLabel="Back to bills" />
+        <main className="container py-4">
+          <div className="panel">
+            <TableSkeleton rows={3} columns={2} />
+          </div>
+          <span className="visually-hidden">Loading bill…</span>
+        </main>
+      </>
+    )
+  }
+
   return (
     <>
-      <PageBar title="New bill" backTo={billsPath} backLabel="Back to bills" />
+      <PageBar title={title} backTo={billsPath} backLabel="Back to bills" />
 
       <main className="container py-4">
         <div className="panel p-4">
           {error && <div className="alert alert-danger py-2">{error}</div>}
 
           <BillForm
-            initialValues={EMPTY_BILL}
+            key={record ? record.id : 'new'}
+            initialValues={record ? toFormValues(record) : EMPTY_BILL}
             sellers={sellers}
             creditCards={creditCards}
             submitting={submitting}
-            submitLabel="Create bill"
+            submitLabel={isEdit ? 'Save changes' : 'Create bill'}
             cancelTo={billsPath}
             onSubmit={handleSubmit}
           />

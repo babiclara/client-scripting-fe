@@ -4,7 +4,7 @@ import { formatDate, formatMoney } from '../utils/format'
 import { displayValue } from '../utils/customerTools'
 import EmptyState from './EmptyState'
 
-export default function BillTable({ rows }) {
+export default function BillTable({ rows, customerId }) {
   if (rows.length === 0) {
     return <EmptyState message="This customer has no bills." />
   }
@@ -21,7 +21,7 @@ export default function BillTable({ rows }) {
               Total
             </th>
             <th scope="col" className="text-end">
-              Items
+              Actions
             </th>
           </tr>
         </thead>
@@ -34,13 +34,21 @@ export default function BillTable({ rows }) {
               <td className="text-nowrap">{formatDate(bill.date)}</td>
               <td className="comment-cell">{displayValue(bill.comment)}</td>
               <td className="text-end text-nowrap">{formatMoney(bill.total)}</td>
-              <td className="text-end">
-                <Link
-                  className="btn btn-sm btn-outline-secondary"
-                  to={`/bills/${bill.id}/items`}
-                >
-                  View
-                </Link>
+              <td>
+                <div className="row-actions">
+                  <Link
+                    className="btn btn-sm btn-outline-secondary"
+                    to={`/bills/${bill.id}/items`}
+                  >
+                    Items
+                  </Link>
+                  <Link
+                    className="btn btn-sm btn-outline-secondary"
+                    to={`/customers/${customerId}/bills/${bill.id}/edit`}
+                  >
+                    Edit
+                  </Link>
+                </div>
               </td>
             </tr>
           ))}
@@ -60,4 +68,5 @@ BillTable.propTypes = {
       total: PropTypes.number,
     }),
   ).isRequired,
+  customerId: PropTypes.string.isRequired,
 }

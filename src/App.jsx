@@ -23,6 +23,10 @@ export default function App() {
           path="customers/:customerId/bills/new"
           element={<BillFormPage />}
         />
+        <Route
+          path="customers/:customerId/bills/:billId/edit"
+          element={<BillFormPage />}
+        />
         <Route path="bills/:billId/items" element={<ItemsPage />} />
         <Route path="login" element={<LoginPage />} />
       </Route>

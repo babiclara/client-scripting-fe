@@ -11,3 +11,7 @@ export function fetchBill(id) {
 export function createBill(bill) {
   return api.post('/Bill', bill)
 }
+
+export function updateBill(id, bill) {
+  return api.put(`/Bill/${id}`, bill)
+}

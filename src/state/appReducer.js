@@ -21,6 +21,7 @@ export const actionTypes = {
   CUSTOMER_DELETED: 'customers/deleted',
   LOOKUPS_LOADED: 'lookups/loaded',
   BILL_CREATED: 'bills/created',
+  BILL_UPDATED: 'bills/updated',
 }
 
 export const initialState = {
@@ -124,6 +125,16 @@ export function appReducer(state, action) {
 
     case actionTypes.BILL_CREATED:
       return { ...state, bills: [...state.bills, action.payload] }
+
+    case actionTypes.BILL_UPDATED: {
+      const updated = action.payload
+      return {
+        ...state,
+        bills: state.bills.map((bill) =>
+          bill.id === updated.id ? updated : bill,
+        ),
+      }
+    }
 
     case actionTypes.CITIES_LOADED:
       return { ...state, cities: action.payload }

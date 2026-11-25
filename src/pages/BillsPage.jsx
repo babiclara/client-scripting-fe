@@ -113,7 +113,7 @@ export default function BillsPage() {
 
       <main className="container py-4">
         <div className="panel">
-          <BillTable rows={bills} />
+          <BillTable rows={bills} customerId={customerId} />
         </div>
       </main>
     </>
