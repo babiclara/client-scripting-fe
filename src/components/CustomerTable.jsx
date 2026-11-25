@@ -11,6 +11,14 @@ const COLUMNS = [
 ]
 
 export default function CustomerTable({ rows, sortBy, sortDir, onSort }) {
+  if (rows.length === 0) {
+    return (
+      <p className="alert alert-light border mb-0">
+        No customers match your search.
+      </p>
+    )
+  }
+
   return (
     <div className="table-responsive">
       <table className="table table-striped table-hover align-middle mb-0 customer-table">
