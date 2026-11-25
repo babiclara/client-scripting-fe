@@ -9,6 +9,9 @@ export const actionTypes = {
   LOGIN_SUCCESS: 'auth/loginSuccess',
   LOGIN_FAILURE: 'auth/loginFailure',
   LOGOUT: 'auth/logout',
+  BILLS_LOAD_START: 'bills/loadStart',
+  BILLS_LOAD_SUCCESS: 'bills/loadSuccess',
+  BILLS_LOAD_FAILURE: 'bills/loadFailure',
 }
 
 export const initialState = {
@@ -24,6 +27,10 @@ export const initialState = {
   token: null,
   userEmail: null,
   authError: null,
+  bills: [],
+  billsCustomer: null,
+  billsStatus: 'idle',
+  billsError: null,
 }
 
 export function appReducer(state, action) {
@@ -65,6 +72,17 @@ export function appReducer(state, action) {
 
     case actionTypes.LOGOUT:
       return { ...state, token: null, userEmail: null, authError: null }
+
+    case actionTypes.BILLS_LOAD_START:
+      return { ...state, billsStatus: 'loading', billsError: null }
+
+    case actionTypes.BILLS_LOAD_SUCCESS: {
+      const { bills, customer } = action.payload
+      return { ...state, billsStatus: 'ready', bills, billsCustomer: customer }
+    }
+
+    case actionTypes.BILLS_LOAD_FAILURE:
+      return { ...state, billsStatus: 'error', billsError: action.payload }
 
     default:
       return state

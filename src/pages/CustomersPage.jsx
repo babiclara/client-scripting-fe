@@ -18,8 +18,18 @@ import Pagination from '../components/Pagination'
 
 export default function CustomersPage() {
   const { state, dispatch } = useApp()
-  const { customers, cities, status, error, search, sortBy, sortDir, page, pageSize } =
-    state
+  const {
+    customers,
+    cities,
+    status,
+    error,
+    search,
+    sortBy,
+    sortDir,
+    page,
+    pageSize,
+    token,
+  } = state
 
   const requested = useRef(false)
 
@@ -119,6 +129,7 @@ export default function CustomersPage() {
         onSort={(column) =>
           dispatch({ type: actionTypes.SET_SORT, payload: column })
         }
+        canViewBills={token !== null}
       />
 
       <div className="mt-3">
