@@ -25,6 +25,7 @@ export const actionTypes = {
   BILL_DELETED: 'bills/deleted',
   ITEM_CREATED: 'items/created',
   ITEM_UPDATED: 'items/updated',
+  ITEM_DELETED: 'items/deleted',
   PRODUCTS_LOADED: 'products/loaded',
 }
 
@@ -132,6 +133,12 @@ export function appReducer(state, action) {
 
     case actionTypes.ITEM_CREATED:
       return { ...state, items: [...state.items, action.payload] }
+
+    case actionTypes.ITEM_DELETED:
+      return {
+        ...state,
+        items: state.items.filter((item) => item.id !== action.payload),
+      }
 
     case actionTypes.ITEM_UPDATED: {
       const updated = action.payload

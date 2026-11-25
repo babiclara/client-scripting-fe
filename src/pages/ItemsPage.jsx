@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useApp } from '../state/useApp'
 import { actionTypes } from '../state/appReducer'
-import { fetchItemsByBill } from '../api/items'
+import { deleteItem, fetchItemsByBill } from '../api/items'
 import { fetchBill } from '../api/bills'
 import { fetchProducts } from '../api/products'
 import { formatMoney, sumAmounts } from '../utils/format'
@@ -14,11 +14,16 @@ import {
 import ItemTable from '../components/ItemTable'
 import TableSkeleton from '../components/TableSkeleton'
 import PageBar from '../components/PageBar'
+import ConfirmDialog from '../components/ConfirmDialog'
 
 export default function ItemsPage() {
   const { billId } = useParams()
   const { state, dispatch } = useApp()
   const { items, itemsBill, products, itemsStatus, itemsError, token } = state
+
+  const [pendingDelete, setPendingDelete] = useState(null)
+  const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState(null)
 
   const loadedFor = useRef(null)
 
@@ -56,6 +61,28 @@ export default function ItemsPage() {
     () => attachProductDetails(items, buildProductLookup(products)),
     [items, products],
   )
+
+  async function handleDelete() {
+    setDeleting(true)
+    setDeleteError(null)
+
+    try {
+      await deleteItem(pendingDelete.id)
+      dispatch({ type: actionTypes.ITEM_DELETED, payload: pendingDelete.id })
+      setPendingDelete(null)
+    } catch (requestError) {
+      setDeleteError(
+        requestError.response?.data?.message || requestError.message,
+      )
+    }
+
+    setDeleting(false)
+  }
+
+  function closeDialog() {
+    setPendingDelete(null)
+    setDeleteError(null)
+  }
 
   if (!token) {
     return (
@@ -127,9 +154,25 @@ export default function ItemsPage() {
 
       <main className="container py-4">
         <div className="panel">
-          <ItemTable rows={rows} billId={billId} />
+          <ItemTable
+            rows={rows}
+            billId={billId}
+            onDelete={setPendingDelete}
+          />
         </div>
       </main>
+
+      {pendingDelete && (
+        <ConfirmDialog
+          title="Delete item"
+          message={`Remove ${pendingDelete.productName || 'this item'} from the bill? This cannot be undone.`}
+          confirmLabel="Delete"
+          busy={deleting}
+          error={deleteError}
+          onConfirm={handleDelete}
+          onCancel={closeDialog}
+        />
+      )}
     </>
   )
 }

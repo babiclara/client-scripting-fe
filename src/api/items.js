@@ -15,3 +15,7 @@ export function createItem(item) {
 export function updateItem(id, item) {
   return api.put(`/Item/${id}`, item)
 }
+
+export function deleteItem(id) {
+  return api.remove(`/Item/${id}`)
+}

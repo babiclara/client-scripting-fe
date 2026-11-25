@@ -4,7 +4,7 @@ import { formatMoney } from '../utils/format'
 import { displayValue } from '../utils/customerTools'
 import EmptyState from './EmptyState'
 
-export default function ItemTable({ rows, billId }) {
+export default function ItemTable({ rows, billId, onDelete }) {
   if (rows.length === 0) {
     return <EmptyState message="This bill has no items." />
   }
@@ -46,6 +46,13 @@ export default function ItemTable({ rows, billId }) {
                   >
                     Edit
                   </Link>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline-danger"
+                    onClick={() => onDelete(item)}
+                  >
+                    Delete
+                  </button>
                 </div>
               </td>
             </tr>
@@ -67,4 +74,5 @@ ItemTable.propTypes = {
     }),
   ).isRequired,
   billId: PropTypes.string.isRequired,
+  onDelete: PropTypes.func.isRequired,
 }
