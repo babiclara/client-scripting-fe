@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { useApp } from '../state/useApp'
 import { actionTypes } from '../state/appReducer'
 import { fetchCustomers } from '../api/customers'
@@ -117,6 +118,13 @@ export default function CustomersPage() {
       <PageBar
         title="Customers"
         pills={[`${ordered.length} of ${rows.length}`]}
+        action={
+          token !== null && (
+            <Link className="btn btn-primary" to="/customers/new">
+              New customer
+            </Link>
+          )
+        }
       />
 
       <main className="container py-4">

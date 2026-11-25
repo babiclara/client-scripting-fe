@@ -6,24 +6,29 @@ export default function PageBar({
   pills = [],
   backTo = null,
   backLabel = 'Back',
+  action = null,
 }) {
   return (
     <div className="page-bar">
       <div className="container page-bar-inner">
-        {backTo && (
-          <Link className="back-link" to={backTo}>
-            &larr; {backLabel}
-          </Link>
-        )}
+        <div>
+          {backTo && (
+            <Link className="back-link" to={backTo}>
+              &larr; {backLabel}
+            </Link>
+          )}
 
-        <div className="page-bar-title">
-          <h1 className="page-title">{title}</h1>
-          {pills.map((pill) => (
-            <span className="pill" key={pill}>
-              {pill}
-            </span>
-          ))}
+          <div className="page-bar-title">
+            <h1 className="page-title">{title}</h1>
+            {pills.map((pill) => (
+              <span className="pill" key={pill}>
+                {pill}
+              </span>
+            ))}
+          </div>
         </div>
+
+        {action}
       </div>
     </div>
   )
@@ -34,4 +39,5 @@ PageBar.propTypes = {
   pills: PropTypes.arrayOf(PropTypes.string),
   backTo: PropTypes.string,
   backLabel: PropTypes.string,
+  action: PropTypes.node,
 }

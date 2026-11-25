@@ -15,6 +15,8 @@ export const actionTypes = {
   ITEMS_LOAD_START: 'items/loadStart',
   ITEMS_LOAD_SUCCESS: 'items/loadSuccess',
   ITEMS_LOAD_FAILURE: 'items/loadFailure',
+  CITIES_LOADED: 'cities/loaded',
+  CUSTOMER_CREATED: 'customers/created',
 }
 
 export const initialState = {
@@ -108,6 +110,12 @@ export function appReducer(state, action) {
 
     case actionTypes.ITEMS_LOAD_FAILURE:
       return { ...state, itemsStatus: 'error', itemsError: action.payload }
+
+    case actionTypes.CITIES_LOADED:
+      return { ...state, cities: action.payload }
+
+    case actionTypes.CUSTOMER_CREATED:
+      return { ...state, customers: [...state.customers, action.payload] }
 
     default:
       return state

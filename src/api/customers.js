@@ -7,3 +7,7 @@ export function fetchCustomers() {
 export function fetchCustomer(id) {
   return api.get(`/Customer/${id}`)
 }
+
+export function createCustomer(customer) {
+  return api.post('/Customer', customer)
+}
