@@ -645,3 +645,55 @@ a:hover {
   justify-content: flex-end;
   gap: 0.4rem;
 }
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1060;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: rgba(17, 22, 29, 0.45);
+}
+
+.dialog {
+  width: 100%;
+  max-width: 26rem;
+  padding: 1.5rem;
+}
+
+.dialog-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  margin: 0 0 0.5rem;
+}
+
+.dialog-message {
+  color: var(--text-muted);
+  margin-bottom: 1.25rem;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.btn-danger {
+  --bs-btn-bg: #c2374d;
+  --bs-btn-border-color: #c2374d;
+  --bs-btn-hover-bg: #a92c41;
+  --bs-btn-hover-border-color: #a92c41;
+  --bs-btn-active-bg: #8f2436;
+  --bs-btn-active-border-color: #8f2436;
+}
+
+.btn-outline-danger {
+  --bs-btn-color: #c2374d;
+  --bs-btn-border-color: #e8c3cb;
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: #c2374d;
+  --bs-btn-hover-border-color: #c2374d;
+}

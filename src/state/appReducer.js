@@ -18,6 +18,7 @@ export const actionTypes = {
   CITIES_LOADED: 'cities/loaded',
   CUSTOMER_CREATED: 'customers/created',
   CUSTOMER_UPDATED: 'customers/updated',
+  CUSTOMER_DELETED: 'customers/deleted',
 }
 
 export const initialState = {
@@ -117,6 +118,14 @@ export function appReducer(state, action) {
 
     case actionTypes.CUSTOMER_CREATED:
       return { ...state, customers: [...state.customers, action.payload] }
+
+    case actionTypes.CUSTOMER_DELETED:
+      return {
+        ...state,
+        customers: state.customers.filter(
+          (customer) => customer.id !== action.payload,
+        ),
+      }
 
     case actionTypes.CUSTOMER_UPDATED: {
       const updated = action.payload

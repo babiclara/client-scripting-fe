@@ -15,3 +15,7 @@ export function createCustomer(customer) {
 export function updateCustomer(id, customer) {
   return api.put(`/Customer/${id}`, customer)
 }
+
+export function deleteCustomer(id) {
+  return api.remove(`/Customer/${id}`)
+}

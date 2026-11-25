@@ -12,7 +12,14 @@ const COLUMNS = [
   { column: 'city', label: 'City' },
 ]
 
-export default function CustomerTable({ rows, sortBy, sortDir, onSort, canManage }) {
+export default function CustomerTable({
+  rows,
+  sortBy,
+  sortDir,
+  onSort,
+  canManage,
+  onDelete,
+}) {
   if (rows.length === 0) {
     return <EmptyState message="No customers match your search." />
   }
@@ -71,6 +78,13 @@ export default function CustomerTable({ rows, sortBy, sortDir, onSort, canManage
                     >
                       Edit
                     </Link>
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-danger"
+                      onClick={() => onDelete(customer)}
+                    >
+                      Delete
+                    </button>
                   </div>
                 </td>
               )}
@@ -97,4 +111,5 @@ CustomerTable.propTypes = {
   sortDir: PropTypes.oneOf(['asc', 'desc']).isRequired,
   onSort: PropTypes.func.isRequired,
   canManage: PropTypes.bool.isRequired,
+  onDelete: PropTypes.func.isRequired,
 }

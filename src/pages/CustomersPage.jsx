@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useApp } from '../state/useApp'
 import { actionTypes } from '../state/appReducer'
-import { fetchCustomers } from '../api/customers'
+import { deleteCustomer, fetchCustomers } from '../api/customers'
 import { fetchCities } from '../api/cities'
 import {
   attachCityNames,
@@ -19,6 +19,7 @@ import CustomerTable from '../components/CustomerTable'
 import Pagination from '../components/Pagination'
 import TableSkeleton from '../components/TableSkeleton'
 import PageBar from '../components/PageBar'
+import ConfirmDialog from '../components/ConfirmDialog'
 
 export default function CustomersPage() {
   const { state, dispatch } = useApp()
@@ -34,6 +35,10 @@ export default function CustomersPage() {
     pageSize,
     token,
   } = state
+
+  const [pendingDelete, setPendingDelete] = useState(null)
+  const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState(null)
 
   const requested = useRef(false)
 
@@ -69,6 +74,31 @@ export default function CustomersPage() {
     () => attachCityNames(customers, buildCityLookup(cities)),
     [customers, cities],
   )
+
+  async function handleDelete() {
+    setDeleting(true)
+    setDeleteError(null)
+
+    try {
+      await deleteCustomer(pendingDelete.id)
+      dispatch({
+        type: actionTypes.CUSTOMER_DELETED,
+        payload: pendingDelete.id,
+      })
+      setPendingDelete(null)
+    } catch (requestError) {
+      setDeleteError(
+        requestError.response?.data?.message || requestError.message,
+      )
+    }
+
+    setDeleting(false)
+  }
+
+  function closeDialog() {
+    setPendingDelete(null)
+    setDeleteError(null)
+  }
 
   const matching = useMemo(() => filterCustomers(rows, search), [rows, search])
   const ordered = useMemo(
@@ -154,6 +184,7 @@ export default function CustomersPage() {
             dispatch({ type: actionTypes.SET_SORT, payload: column })
           }
           canManage={token !== null}
+          onDelete={setPendingDelete}
         />
 
         <div className="panel-footer">
@@ -170,6 +201,18 @@ export default function CustomersPage() {
         </div>
         </div>
       </main>
+
+      {pendingDelete && (
+        <ConfirmDialog
+          title="Delete customer"
+          message={`Delete ${pendingDelete.name} ${pendingDelete.surname}? This cannot be undone.`}
+          confirmLabel="Delete"
+          busy={deleting}
+          error={deleteError}
+          onConfirm={handleDelete}
+          onCancel={closeDialog}
+        />
+      )}
     </>
   )
 }

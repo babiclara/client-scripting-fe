@@ -32,6 +32,11 @@ class ApiClient {
     const { data } = await this.http.put(path, body)
     return data
   }
+
+  async remove(path) {
+    const { data } = await this.http.delete(path)
+    return data
+  }
 }
 
 export default ApiClient
