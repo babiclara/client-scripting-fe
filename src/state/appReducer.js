@@ -8,6 +8,7 @@ export const actionTypes = {
   SET_PAGE: 'customers/setPage',
   LOGIN_SUCCESS: 'auth/loginSuccess',
   LOGIN_FAILURE: 'auth/loginFailure',
+  LOGOUT: 'auth/logout',
 }
 
 export const initialState = {
@@ -61,6 +62,9 @@ export function appReducer(state, action) {
 
     case actionTypes.LOGIN_FAILURE:
       return { ...state, token: null, userEmail: null, authError: action.payload }
+
+    case actionTypes.LOGOUT:
+      return { ...state, token: null, userEmail: null, authError: null }
 
     default:
       return state

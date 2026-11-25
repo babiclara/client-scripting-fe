@@ -5,3 +5,7 @@ export async function login(email, password) {
   api.setToken(access_token)
   return access_token
 }
+
+export function logout() {
+  api.setToken(null)
+}
