@@ -6,6 +6,7 @@ import BillsPage from './pages/BillsPage'
 import ItemsPage from './pages/ItemsPage'
 import CustomerFormPage from './pages/CustomerFormPage'
 import BillFormPage from './pages/BillFormPage'
+import ItemFormPage from './pages/ItemFormPage'
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
           element={<BillFormPage />}
         />
         <Route path="bills/:billId/items" element={<ItemsPage />} />
+        <Route path="bills/:billId/items/new" element={<ItemFormPage />} />
         <Route path="login" element={<LoginPage />} />
       </Route>
     </Routes>

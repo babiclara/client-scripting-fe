@@ -54,6 +54,38 @@ export function validateBill(values) {
   return errors
 }
 
+export function validateItem(values) {
+  var errors = {}
+
+  if (textOf(values.productId) === '') {
+    errors.productId = 'Product is required.'
+  }
+
+  var quantity = textOf(values.quantity)
+
+  if (quantity === '') {
+    errors.quantity = 'Quantity is required.'
+  } else if (isNaN(Number(quantity))) {
+    errors.quantity = 'Quantity must be a number.'
+  } else if (Number(quantity) < 1) {
+    errors.quantity = 'Quantity must be at least 1.'
+  } else if (Number(quantity) % 1 !== 0) {
+    errors.quantity = 'Quantity must be a whole number.'
+  }
+
+  var totalPrice = textOf(values.totalPrice)
+
+  if (totalPrice === '') {
+    errors.totalPrice = 'Total price is required.'
+  } else if (isNaN(Number(totalPrice))) {
+    errors.totalPrice = 'Total price must be a number.'
+  } else if (Number(totalPrice) < 0) {
+    errors.totalPrice = 'Total price cannot be negative.'
+  }
+
+  return errors
+}
+
 export function hasErrors(errors) {
   return Object.keys(errors).length > 0
 }

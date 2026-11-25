@@ -118,6 +118,11 @@ export default function ItemsPage() {
         ]}
         backTo={backTo}
         backLabel="Back to bills"
+        action={
+          <Link className="btn btn-primary" to={`/bills/${billId}/items/new`}>
+            New item
+          </Link>
+        }
       />
 
       <main className="container py-4">

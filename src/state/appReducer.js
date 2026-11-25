@@ -23,6 +23,8 @@ export const actionTypes = {
   BILL_CREATED: 'bills/created',
   BILL_UPDATED: 'bills/updated',
   BILL_DELETED: 'bills/deleted',
+  ITEM_CREATED: 'items/created',
+  PRODUCTS_LOADED: 'products/loaded',
 }
 
 export const initialState = {
@@ -123,6 +125,12 @@ export function appReducer(state, action) {
       const { sellers, creditCards } = action.payload
       return { ...state, sellers, creditCards }
     }
+
+    case actionTypes.PRODUCTS_LOADED:
+      return { ...state, products: action.payload }
+
+    case actionTypes.ITEM_CREATED:
+      return { ...state, items: [...state.items, action.payload] }
 
     case actionTypes.BILL_CREATED:
       return { ...state, bills: [...state.bills, action.payload] }

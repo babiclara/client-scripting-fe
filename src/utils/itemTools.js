@@ -26,3 +26,20 @@ export function countUnits(items) {
     return total + Number(item.quantity || 0)
   }, 0)
 }
+
+export function describeProduct(product) {
+  return product.name + ' (' + product.productNumber + ')'
+}
+
+export function filterProducts(products, term, limit) {
+  var needle = String(term).trim().toLowerCase()
+
+  var matches = products.filter(function (product) {
+    if (needle === '') {
+      return true
+    }
+    return describeProduct(product).toLowerCase().indexOf(needle) !== -1
+  })
+
+  return matches.slice(0, limit)
+}
