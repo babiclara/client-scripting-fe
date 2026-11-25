@@ -3,12 +3,17 @@ import { useApp } from '../state/useApp'
 import { actionTypes } from '../state/appReducer'
 import { fetchCustomers } from '../api/customers'
 import { fetchCities } from '../api/cities'
-import { attachCityNames, buildCityLookup } from '../utils/customerTools'
+import {
+  attachCityNames,
+  buildCityLookup,
+  filterCustomers,
+} from '../utils/customerTools'
+import SearchBox from '../components/SearchBox'
 import CustomerTable from '../components/CustomerTable'
 
 export default function CustomersPage() {
   const { state, dispatch } = useApp()
-  const { customers, cities, status, error } = state
+  const { customers, cities, status, error, search } = state
 
   const requested = useRef(false)
 
@@ -45,6 +50,8 @@ export default function CustomersPage() {
     [customers, cities],
   )
 
+  const matching = useMemo(() => filterCustomers(rows, search), [rows, search])
+
   if (status === 'loading' || status === 'idle') {
     return <p className="text-secondary">Loading customers…</p>
   }
@@ -64,10 +71,23 @@ export default function CustomersPage() {
     <section>
       <header className="mb-3">
         <h1 className="h3 mb-1">Customers</h1>
-        <p className="text-secondary mb-0">{rows.length} customers</p>
+        <p className="text-secondary mb-0">
+          {matching.length} of {rows.length} customers
+        </p>
       </header>
 
-      <CustomerTable rows={rows} />
+      <div className="row g-2 mb-3">
+        <div className="col-12 col-md-7 col-lg-6">
+          <SearchBox
+            value={search}
+            onChange={(value) =>
+              dispatch({ type: actionTypes.SET_SEARCH, payload: value })
+            }
+          />
+        </div>
+      </div>
+
+      <CustomerTable rows={matching} />
     </section>
   )
 }
