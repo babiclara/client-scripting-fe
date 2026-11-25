@@ -17,6 +17,7 @@ export const actionTypes = {
   ITEMS_LOAD_FAILURE: 'items/loadFailure',
   CITIES_LOADED: 'cities/loaded',
   CUSTOMER_CREATED: 'customers/created',
+  CUSTOMER_UPDATED: 'customers/updated',
 }
 
 export const initialState = {
@@ -116,6 +117,16 @@ export function appReducer(state, action) {
 
     case actionTypes.CUSTOMER_CREATED:
       return { ...state, customers: [...state.customers, action.payload] }
+
+    case actionTypes.CUSTOMER_UPDATED: {
+      const updated = action.payload
+      return {
+        ...state,
+        customers: state.customers.map((customer) =>
+          customer.id === updated.id ? updated : customer,
+        ),
+      }
+    }
 
     default:
       return state

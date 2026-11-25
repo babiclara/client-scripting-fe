@@ -153,7 +153,7 @@ export default function CustomersPage() {
           onSort={(column) =>
             dispatch({ type: actionTypes.SET_SORT, payload: column })
           }
-          canViewBills={token !== null}
+          canManage={token !== null}
         />
 
         <div className="panel-footer">

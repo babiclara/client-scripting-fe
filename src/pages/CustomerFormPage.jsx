@@ -1,10 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useApp } from '../state/useApp'
 import { actionTypes } from '../state/appReducer'
-import { createCustomer } from '../api/customers'
+import {
+  createCustomer,
+  fetchCustomer,
+  updateCustomer,
+} from '../api/customers'
 import { fetchCities } from '../api/cities'
 import CustomerForm from '../components/CustomerForm'
+import TableSkeleton from '../components/TableSkeleton'
 import PageBar from '../components/PageBar'
 
 const EMPTY_CUSTOMER = {
@@ -15,15 +20,31 @@ const EMPTY_CUSTOMER = {
   cityId: '',
 }
 
+function toFormValues(customer) {
+  return {
+    name: customer.name || '',
+    surname: customer.surname || '',
+    email: customer.email || '',
+    telephone: customer.telephone || '',
+    cityId: customer.cityId === null ? '' : String(customer.cityId),
+  }
+}
+
 export default function CustomerFormPage() {
+  const { customerId } = useParams()
   const { state, dispatch } = useApp()
   const navigate = useNavigate()
-  const { cities, token } = state
+  const { cities, customers, token } = state
 
+  const isEdit = Boolean(customerId)
+  const fromStore = customers.find((item) => String(item.id) === customerId)
+
+  const [fetched, setFetched] = useState(null)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState(null)
 
   const requestedCities = useRef(false)
+  const requestedCustomer = useRef(false)
 
   useEffect(() => {
     if (cities.length > 0 || requestedCities.current) return
@@ -36,11 +57,22 @@ export default function CustomerFormPage() {
       .catch((requestError) => setError(requestError.message))
   }, [cities.length, dispatch])
 
+  useEffect(() => {
+    if (!isEdit || fromStore || requestedCustomer.current) return
+    requestedCustomer.current = true
+
+    fetchCustomer(customerId)
+      .then((data) => setFetched(data))
+      .catch((requestError) => setError(requestError.message))
+  }, [customerId, fromStore, isEdit])
+
+  const record = fromStore || fetched
+
   async function handleSubmit(values) {
     setSubmitting(true)
     setError(null)
 
-    const payload = {
+    const edits = {
       name: values.name.trim(),
       surname: values.surname.trim(),
       email: values.email.trim(),
@@ -49,8 +81,14 @@ export default function CustomerFormPage() {
     }
 
     try {
-      const created = await createCustomer(payload)
-      dispatch({ type: actionTypes.CUSTOMER_CREATED, payload: created })
+      if (isEdit) {
+        const saved = await updateCustomer(customerId, { ...record, ...edits })
+        dispatch({ type: actionTypes.CUSTOMER_UPDATED, payload: saved })
+      } else {
+        const created = await createCustomer(edits)
+        dispatch({ type: actionTypes.CUSTOMER_CREATED, payload: created })
+      }
+
       navigate('/customers')
     } catch (requestError) {
       setError(requestError.response?.data?.message || requestError.message)
@@ -58,14 +96,16 @@ export default function CustomerFormPage() {
     }
   }
 
+  const title = isEdit ? 'Edit customer' : 'New customer'
+
   if (!token) {
     return (
       <>
-        <PageBar title="New customer" />
+        <PageBar title={title} />
         <main className="container py-4">
           <div className="panel p-4">
             <p className="page-subtitle mb-3">
-              Creating customers is only available to signed-in users.
+              Managing customers is only available to signed-in users.
             </p>
             <Link className="btn btn-primary" to="/login">
               Sign in
@@ -76,23 +116,34 @@ export default function CustomerFormPage() {
     )
   }
 
+  if (isEdit && !record) {
+    return (
+      <>
+        <PageBar title={title} backTo="/customers" backLabel="All customers" />
+        <main className="container py-4">
+          <div className="panel">
+            <TableSkeleton rows={3} columns={2} />
+          </div>
+          <span className="visually-hidden">Loading customer…</span>
+        </main>
+      </>
+    )
+  }
+
   return (
     <>
-      <PageBar
-        title="New customer"
-        backTo="/customers"
-        backLabel="All customers"
-      />
+      <PageBar title={title} backTo="/customers" backLabel="All customers" />
 
       <main className="container py-4">
-        <div className="panel p-4 p-sm-4">
+        <div className="panel p-4">
           {error && <div className="alert alert-danger py-2">{error}</div>}
 
           <CustomerForm
-            initialValues={EMPTY_CUSTOMER}
+            key={record ? record.id : 'new'}
+            initialValues={record ? toFormValues(record) : EMPTY_CUSTOMER}
             cities={cities}
             submitting={submitting}
-            submitLabel="Create customer"
+            submitLabel={isEdit ? 'Save changes' : 'Create customer'}
             onSubmit={handleSubmit}
           />
         </div>

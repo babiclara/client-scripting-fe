@@ -12,7 +12,7 @@ const COLUMNS = [
   { column: 'city', label: 'City' },
 ]
 
-export default function CustomerTable({ rows, sortBy, sortDir, onSort, canViewBills }) {
+export default function CustomerTable({ rows, sortBy, sortDir, onSort, canManage }) {
   if (rows.length === 0) {
     return <EmptyState message="No customers match your search." />
   }
@@ -32,9 +32,9 @@ export default function CustomerTable({ rows, sortBy, sortDir, onSort, canViewBi
                 onSort={onSort}
               />
             ))}
-            {canViewBills && (
+            {canManage && (
               <th scope="col" className="text-end">
-                Bills
+                Actions
               </th>
             )}
           </tr>
@@ -56,14 +56,22 @@ export default function CustomerTable({ rows, sortBy, sortDir, onSort, canViewBi
               <td className={customer.city === '' ? 'text-secondary' : ''}>
                 {displayValue(customer.city)}
               </td>
-              {canViewBills && (
-                <td className="text-end">
-                  <Link
-                    className="btn btn-sm btn-outline-secondary"
-                    to={`/customers/${customer.id}/bills`}
-                  >
-                    View
-                  </Link>
+              {canManage && (
+                <td>
+                  <div className="row-actions">
+                    <Link
+                      className="btn btn-sm btn-outline-secondary"
+                      to={`/customers/${customer.id}/bills`}
+                    >
+                      Bills
+                    </Link>
+                    <Link
+                      className="btn btn-sm btn-outline-secondary"
+                      to={`/customers/${customer.id}/edit`}
+                    >
+                      Edit
+                    </Link>
+                  </div>
                 </td>
               )}
             </tr>
@@ -88,5 +96,5 @@ CustomerTable.propTypes = {
   sortBy: PropTypes.string.isRequired,
   sortDir: PropTypes.oneOf(['asc', 'desc']).isRequired,
   onSort: PropTypes.func.isRequired,
-  canViewBills: PropTypes.bool.isRequired,
+  canManage: PropTypes.bool.isRequired,
 }

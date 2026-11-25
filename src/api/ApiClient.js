@@ -27,6 +27,11 @@ class ApiClient {
     const { data } = await this.http.post(path, body)
     return data
   }
+
+  async put(path, body) {
+    const { data } = await this.http.put(path, body)
+    return data
+  }
 }
 
 export default ApiClient

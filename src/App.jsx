@@ -13,6 +13,10 @@ export default function App() {
         <Route index element={<Navigate to="/customers" replace />} />
         <Route path="customers" element={<CustomersPage />} />
         <Route path="customers/new" element={<CustomerFormPage />} />
+        <Route
+          path="customers/:customerId/edit"
+          element={<CustomerFormPage />}
+        />
         <Route path="customers/:customerId/bills" element={<BillsPage />} />
         <Route path="bills/:billId/items" element={<ItemsPage />} />
         <Route path="login" element={<LoginPage />} />

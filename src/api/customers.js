@@ -11,3 +11,7 @@ export function fetchCustomer(id) {
 export function createCustomer(customer) {
   return api.post('/Customer', customer)
 }
+
+export function updateCustomer(id, customer) {
+  return api.put(`/Customer/${id}`, customer)
+}
