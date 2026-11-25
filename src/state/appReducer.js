@@ -6,6 +6,8 @@ export const actionTypes = {
   SET_SORT: 'customers/setSort',
   SET_PAGE_SIZE: 'customers/setPageSize',
   SET_PAGE: 'customers/setPage',
+  LOGIN_SUCCESS: 'auth/loginSuccess',
+  LOGIN_FAILURE: 'auth/loginFailure',
 }
 
 export const initialState = {
@@ -18,6 +20,9 @@ export const initialState = {
   sortDir: 'asc',
   pageSize: 10,
   page: 1,
+  token: null,
+  userEmail: null,
+  authError: null,
 }
 
 export function appReducer(state, action) {
@@ -48,6 +53,14 @@ export function appReducer(state, action) {
 
     case actionTypes.SET_PAGE:
       return { ...state, page: action.payload }
+
+    case actionTypes.LOGIN_SUCCESS: {
+      const { token, email } = action.payload
+      return { ...state, token, userEmail: email, authError: null }
+    }
+
+    case actionTypes.LOGIN_FAILURE:
+      return { ...state, token: null, userEmail: null, authError: action.payload }
 
     default:
       return state
