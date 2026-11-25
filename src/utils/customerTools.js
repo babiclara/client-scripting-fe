@@ -40,6 +40,24 @@ export function filterCustomers(customers, term) {
   })
 }
 
+export function sortCustomers(customers, column, direction) {
+  var factor = direction === 'desc' ? -1 : 1
+  var copy = customers.slice()
+
+  copy.sort(function (a, b) {
+    var left = String(a[column] || '').toLowerCase()
+    var right = String(b[column] || '').toLowerCase()
+
+    if (left === right) return 0
+    if (left === '') return 1
+    if (right === '') return -1
+
+    return left < right ? -factor : factor
+  })
+
+  return copy
+}
+
 export function displayValue(value) {
   return value === '' || value === null || value === undefined ? EMPTY_VALUE : value
 }

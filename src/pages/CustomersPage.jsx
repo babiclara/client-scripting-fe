@@ -7,13 +7,14 @@ import {
   attachCityNames,
   buildCityLookup,
   filterCustomers,
+  sortCustomers,
 } from '../utils/customerTools'
 import SearchBox from '../components/SearchBox'
 import CustomerTable from '../components/CustomerTable'
 
 export default function CustomersPage() {
   const { state, dispatch } = useApp()
-  const { customers, cities, status, error, search } = state
+  const { customers, cities, status, error, search, sortBy, sortDir } = state
 
   const requested = useRef(false)
 
@@ -51,6 +52,10 @@ export default function CustomersPage() {
   )
 
   const matching = useMemo(() => filterCustomers(rows, search), [rows, search])
+  const ordered = useMemo(
+    () => sortCustomers(matching, sortBy, sortDir),
+    [matching, sortBy, sortDir],
+  )
 
   if (status === 'loading' || status === 'idle') {
     return <p className="text-secondary">Loading customers…</p>
@@ -72,7 +77,7 @@ export default function CustomersPage() {
       <header className="mb-3">
         <h1 className="h3 mb-1">Customers</h1>
         <p className="text-secondary mb-0">
-          {matching.length} of {rows.length} customers
+          {ordered.length} of {rows.length} customers
         </p>
       </header>
 
@@ -87,7 +92,14 @@ export default function CustomersPage() {
         </div>
       </div>
 
-      <CustomerTable rows={matching} />
+      <CustomerTable
+        rows={ordered}
+        sortBy={sortBy}
+        sortDir={sortDir}
+        onSort={(column) =>
+          dispatch({ type: actionTypes.SET_SORT, payload: column })
+        }
+      />
     </section>
   )
 }

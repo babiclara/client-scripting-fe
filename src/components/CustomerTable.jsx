@@ -1,17 +1,31 @@
 import PropTypes from 'prop-types'
+import SortableHeader from './SortableHeader'
 import { displayValue } from '../utils/customerTools'
 
-export default function CustomerTable({ rows }) {
+const COLUMNS = [
+  { column: 'name', label: 'Name' },
+  { column: 'surname', label: 'Surname' },
+  { column: 'email', label: 'Email' },
+  { column: 'telephone', label: 'Telephone' },
+  { column: 'city', label: 'City' },
+]
+
+export default function CustomerTable({ rows, sortBy, sortDir, onSort }) {
   return (
     <div className="table-responsive">
       <table className="table table-striped table-hover align-middle mb-0 customer-table">
         <thead>
           <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Surname</th>
-            <th scope="col">Email</th>
-            <th scope="col">Telephone</th>
-            <th scope="col">City</th>
+            {COLUMNS.map(({ column, label }) => (
+              <SortableHeader
+                key={column}
+                column={column}
+                label={label}
+                sortBy={sortBy}
+                sortDir={sortDir}
+                onSort={onSort}
+              />
+            ))}
           </tr>
         </thead>
         <tbody>
@@ -43,4 +57,7 @@ CustomerTable.propTypes = {
       city: PropTypes.string,
     }),
   ).isRequired,
+  sortBy: PropTypes.string.isRequired,
+  sortDir: PropTypes.oneOf(['asc', 'desc']).isRequired,
+  onSort: PropTypes.func.isRequired,
 }

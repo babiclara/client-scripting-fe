@@ -3,6 +3,7 @@ export const actionTypes = {
   LOAD_SUCCESS: 'customers/loadSuccess',
   LOAD_FAILURE: 'customers/loadFailure',
   SET_SEARCH: 'customers/setSearch',
+  SET_SORT: 'customers/setSort',
 }
 
 export const initialState = {
@@ -11,6 +12,8 @@ export const initialState = {
   status: 'idle',
   error: null,
   search: '',
+  sortBy: 'surname',
+  sortDir: 'asc',
 }
 
 export function appReducer(state, action) {
@@ -28,6 +31,13 @@ export function appReducer(state, action) {
 
     case actionTypes.SET_SEARCH:
       return { ...state, search: action.payload }
+
+    case actionTypes.SET_SORT: {
+      const column = action.payload
+      const sameColumn = state.sortBy === column
+      const sortDir = sameColumn && state.sortDir === 'asc' ? 'desc' : 'asc'
+      return { ...state, sortBy: column, sortDir }
+    }
 
     default:
       return state
