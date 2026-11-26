@@ -24,16 +24,16 @@ export default function BillForm({
   const [cardQuery, setCardQuery] = useState('')
 
   const visibleCards = useMemo(() => {
-    const shortlist = filterCards(creditCards, cardQuery, CARD_LIMIT)
+    let visible = filterCards(creditCards, cardQuery, CARD_LIMIT)
     const chosen = creditCards.find(
       (card) => String(card.id) === values.creditCardId,
     )
 
-    if (chosen && !shortlist.some((card) => card.id === chosen.id)) {
-      return [chosen].concat(shortlist)
+    if (chosen && !visible.some((card) => card.id === chosen.id)) {
+      visible = [chosen].concat(visible)
     }
 
-    return shortlist
+    return visible
   }, [cardQuery, creditCards, values.creditCardId])
 
   function setField(field, value) {

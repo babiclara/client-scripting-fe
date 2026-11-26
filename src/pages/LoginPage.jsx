@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useApp } from '../state/useApp'
 import { actionTypes } from '../state/appReducer'
 import { login } from '../api/auth'
+import { describeError } from '../utils/errors'
 
 export default function LoginPage() {
   const { state, dispatch } = useApp()
@@ -21,7 +22,7 @@ export default function LoginPage() {
       dispatch({ type: actionTypes.LOGIN_SUCCESS, payload: { token, email } })
       navigate('/customers')
     } catch (error) {
-      const message = error.response?.data?.message || error.message
+      const message = describeError(error)
       dispatch({ type: actionTypes.LOGIN_FAILURE, payload: message })
       setSubmitting(false)
     }

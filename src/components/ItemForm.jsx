@@ -19,16 +19,16 @@ export default function ItemForm({
   const [productQuery, setProductQuery] = useState('')
 
   const visibleProducts = useMemo(() => {
-    const shortlist = filterProducts(products, productQuery, PRODUCT_LIMIT)
+    let visible = filterProducts(products, productQuery, PRODUCT_LIMIT)
     const chosen = products.find(
       (product) => String(product.id) === values.productId,
     )
 
-    if (chosen && !shortlist.some((product) => product.id === chosen.id)) {
-      return [chosen].concat(shortlist)
+    if (chosen && !visible.some((product) => product.id === chosen.id)) {
+      visible = [chosen].concat(visible)
     }
 
-    return shortlist
+    return visible
   }, [productQuery, products, values.productId])
 
   function setField(field, value) {

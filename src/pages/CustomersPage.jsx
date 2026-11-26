@@ -4,6 +4,7 @@ import { useApp } from '../state/useApp'
 import { actionTypes } from '../state/appReducer'
 import { deleteCustomer, fetchCustomers } from '../api/customers'
 import { fetchCities } from '../api/cities'
+import { describeError } from '../utils/errors'
 import {
   attachCityNames,
   buildCityLookup,
@@ -87,9 +88,7 @@ export default function CustomersPage() {
       })
       setPendingDelete(null)
     } catch (requestError) {
-      setDeleteError(
-        requestError.response?.data?.message || requestError.message,
-      )
+      setDeleteError(describeError(requestError))
     }
 
     setDeleting(false)

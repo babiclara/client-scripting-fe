@@ -5,6 +5,7 @@ import { actionTypes } from '../state/appReducer'
 import { createBill, fetchBill, updateBill } from '../api/bills'
 import { fetchSellers } from '../api/sellers'
 import { fetchCreditCards } from '../api/creditCards'
+import { describeError } from '../utils/errors'
 import { fromDateInputValue, toDateInputValue } from '../utils/format'
 import BillForm from '../components/BillForm'
 import TableSkeleton from '../components/TableSkeleton'
@@ -103,7 +104,7 @@ export default function BillFormPage() {
 
       navigate(billsPath)
     } catch (requestError) {
-      setError(requestError.response?.data?.message || requestError.message)
+      setError(describeError(requestError))
       setSubmitting(false)
     }
   }

@@ -8,6 +8,7 @@ import {
   updateCustomer,
 } from '../api/customers'
 import { fetchCities } from '../api/cities'
+import { describeError } from '../utils/errors'
 import CustomerForm from '../components/CustomerForm'
 import TableSkeleton from '../components/TableSkeleton'
 import PageBar from '../components/PageBar'
@@ -91,7 +92,7 @@ export default function CustomerFormPage() {
 
       navigate('/customers')
     } catch (requestError) {
-      setError(requestError.response?.data?.message || requestError.message)
+      setError(describeError(requestError))
       setSubmitting(false)
     }
   }

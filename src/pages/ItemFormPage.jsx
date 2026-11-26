@@ -4,6 +4,7 @@ import { useApp } from '../state/useApp'
 import { actionTypes } from '../state/appReducer'
 import { createItem, fetchItem, updateItem } from '../api/items'
 import { fetchProducts } from '../api/products'
+import { describeError } from '../utils/errors'
 import ItemForm from '../components/ItemForm'
 import TableSkeleton from '../components/TableSkeleton'
 import PageBar from '../components/PageBar'
@@ -83,7 +84,7 @@ export default function ItemFormPage() {
 
       navigate(itemsPath)
     } catch (requestError) {
-      setError(requestError.response?.data?.message || requestError.message)
+      setError(describeError(requestError))
       setSubmitting(false)
     }
   }

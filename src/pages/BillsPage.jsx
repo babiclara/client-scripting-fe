@@ -4,6 +4,7 @@ import { useApp } from '../state/useApp'
 import { actionTypes } from '../state/appReducer'
 import { deleteBill, fetchBillsByCustomer } from '../api/bills'
 import { fetchCustomer } from '../api/customers'
+import { describeError } from '../utils/errors'
 import { formatMoney, sumAmounts } from '../utils/format'
 import BillTable from '../components/BillTable'
 import TableSkeleton from '../components/TableSkeleton'
@@ -59,9 +60,7 @@ export default function BillsPage() {
       dispatch({ type: actionTypes.BILL_DELETED, payload: pendingDelete.id })
       setPendingDelete(null)
     } catch (requestError) {
-      setDeleteError(
-        requestError.response?.data?.message || requestError.message,
-      )
+      setDeleteError(describeError(requestError))
     }
 
     setDeleting(false)

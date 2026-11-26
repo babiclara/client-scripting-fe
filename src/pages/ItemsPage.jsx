@@ -5,6 +5,7 @@ import { actionTypes } from '../state/appReducer'
 import { deleteItem, fetchItemsByBill } from '../api/items'
 import { fetchBill } from '../api/bills'
 import { fetchProducts } from '../api/products'
+import { describeError } from '../utils/errors'
 import { formatMoney, sumAmounts } from '../utils/format'
 import {
   attachProductDetails,
@@ -71,9 +72,7 @@ export default function ItemsPage() {
       dispatch({ type: actionTypes.ITEM_DELETED, payload: pendingDelete.id })
       setPendingDelete(null)
     } catch (requestError) {
-      setDeleteError(
-        requestError.response?.data?.message || requestError.message,
-      )
+      setDeleteError(describeError(requestError))
     }
 
     setDeleting(false)
