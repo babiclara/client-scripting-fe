@@ -1,3 +1,7 @@
+import { readSession } from '../utils/session'
+
+const restored = readSession()
+
 export const actionTypes = {
   LOAD_START: 'customers/loadStart',
   LOAD_SUCCESS: 'customers/loadSuccess',
@@ -39,8 +43,8 @@ export const initialState = {
   sortDir: 'asc',
   pageSize: 10,
   page: 1,
-  token: null,
-  userEmail: null,
+  token: restored ? restored.token : null,
+  userEmail: restored ? restored.email : null,
   authError: null,
   bills: [],
   billsCustomer: null,
